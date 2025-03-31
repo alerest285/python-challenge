@@ -1,0 +1,43 @@
+from brownian.robot import brownian
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+
+def main():
+    #defines robot entity
+     robot = brownian(boundary=20, step_size=0.5)
+    
+    # axis bounds and grid
+     fig, ax = plt.subplots(figsize=(8, 8))
+     ax.set_xlim(0, 20)
+     ax.set_ylim(0, 20)
+     ax.grid(True)   
+
+     line, = ax.plot([], [], 'b-')
+     point = ax.scatter([], [], c='r', s=50)
+
+     def init():
+        line.set_data([], []) 
+        return line, point
+
+     def update(frame):
+            robot.move()
+            x, y = robot.get_path()
+            
+            line.set_data(list(x), list(y))
+            point.set_offsets([[robot.x, robot.y]])
+            
+            return line, point
+
+     animatiion = FuncAnimation(
+        fig, 
+        update, 
+        init_func=init,
+        frames=1000,
+        interval=10,
+        blit=True
+     )
+    
+     plt.show()
+
+if __name__ == "__main__":
+    main()
